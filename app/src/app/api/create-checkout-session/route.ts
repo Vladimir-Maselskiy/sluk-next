@@ -5,7 +5,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2025-04-30.basil',
 });
 
-export const POST = async (req: NextRequest) => {
+export const POST = async () => {
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
