@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
-import { CheckoutForm } from './CheckoutForm';
+import { CheckoutForm } from '../CheckoutForm/CheckoutForm';
+import styles from './payment.module.css';
 
 const domain = 'http://localhost:3001/api';
 
@@ -39,19 +40,8 @@ export const Payment = () => {
   // }, []);
 
   return (
-    <div
-      className="App"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        maxWidth: '600px',
-        margin: '0 auto',
-        alignItems: 'center',
-        gap: '16px',
-        padding: '32px',
-      }}
-    >
-      <h1>Checkout</h1>
+    <div>
+      <h1 className={styles.title}>Checkout</h1>
       {clientSecret && stripePromise && (
         <Elements stripe={stripePromise} options={{ clientSecret }}>
           <CheckoutForm />
