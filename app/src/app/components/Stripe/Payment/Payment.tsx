@@ -6,7 +6,7 @@ import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { CheckoutForm } from '../CheckoutForm/CheckoutForm';
 import styles from './payment.module.css';
 
-const domain = 'http://localhost:3001/api';
+const domain = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const Payment = () => {
   const [stripePromise, setStripePromise] =
@@ -14,14 +14,14 @@ export const Payment = () => {
   const [clientSecret, setClientSecret] = useState('');
 
   useEffect(() => {
-    fetch(`${domain}/config`).then(async r => {
+    fetch(`${domain}/api/config`).then(async r => {
       const { publishableKey }: { publishableKey: string } = await r.json();
       setStripePromise(loadStripe(publishableKey));
     });
   }, []);
 
   useEffect(() => {
-    fetch(`${domain}/create-payment-intent`, {
+    fetch(`${domain}/api/create-payment-intent`, {
       method: 'POST',
       body: JSON.stringify({}),
     }).then(async result => {
