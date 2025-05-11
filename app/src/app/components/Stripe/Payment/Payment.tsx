@@ -25,7 +25,7 @@ export const Payment = () => {
       method: 'POST',
       body: JSON.stringify({}),
     }).then(async result => {
-      let { clientSecret } = await result.json();
+      const { clientSecret } = await result.json();
       setClientSecret(clientSecret);
     });
   }, []);
