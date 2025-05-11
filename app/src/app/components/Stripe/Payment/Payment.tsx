@@ -25,7 +25,7 @@ export const Payment = () => {
       method: 'POST',
       body: JSON.stringify({}),
     }).then(async result => {
-      var { clientSecret } = await result.json();
+      let { clientSecret } = await result.json();
       setClientSecret(clientSecret);
     });
   }, []);
@@ -34,7 +34,7 @@ export const Payment = () => {
   //     method: 'POST',
   //     body: JSON.stringify({}),
   //   }).then(async result => {
-  //     var { clientSecret } = await result.json();
+  //     let { clientSecret } = await result.json();
   //     setClientSecret(clientSecret);
   //   });
   // }, []);
