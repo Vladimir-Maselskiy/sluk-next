@@ -9,8 +9,6 @@ export const POST = async () => {
       payment_method_types: ['card'],
     });
 
-    console.log('paymentIntent', paymentIntent);
-
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
     });
