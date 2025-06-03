@@ -8,7 +8,7 @@ export const connectToDatabase = async () => {
 
   try {
     await mongoose.connect(MONGODB_URI, {
-      dbName: 'your_database_name',
+      dbName: 'sluk',
     });
     console.log('MongoDB connected');
   } catch (error) {
