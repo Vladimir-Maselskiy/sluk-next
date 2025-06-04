@@ -4,13 +4,12 @@ import { connectToDatabase } from '@/utils/db';
 
 export async function GET(
   req: NextRequest,
-  context: { params: { userId: string } }
+  { params }: { params: { userId: string } }
 ) {
   try {
     await connectToDatabase();
 
-    const { userId } = context.params;
-    const user = await User.findById(userId).lean();
+    const user = await User.findById(params.userId).lean();
 
     if (!user) {
       return NextResponse.json(
