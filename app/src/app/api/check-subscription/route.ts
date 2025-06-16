@@ -7,7 +7,6 @@ export const POST = async (request: Request) => {
   try {
     const body = await request.json();
     const { userId } = body;
-    let isTrial = false;
 
     if (!userId) {
       return NextResponse.json({ error: 'Missing email' }, { status: 400 });
