@@ -1,4 +1,4 @@
-import { Payment } from './components/Stripe/Payment/Payment';
+import { Payment } from '../components/Stripe/Payment/Payment';
 
 export default function Home() {
   return (
