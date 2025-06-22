@@ -6,6 +6,7 @@ import UserModel from '@/models/User';
 export async function POST(req: NextRequest) {
   try {
     const { accessToken } = await req.json();
+    console.log('accessToken', accessToken);
 
     if (!accessToken) {
       return NextResponse.json(
