@@ -4,7 +4,6 @@ import UserModel from '@/models/User';
 
 export const POST = async (request: NextRequest) => {
   const { cost, userId, duration } = await request.json();
-  console.log('cost', cost, 'userId', userId, 'duration', duration);
   if (!cost || !userId || !duration) {
     return NextResponse.json(
       { error: 'Missing required fields' },
@@ -16,13 +15,16 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
   const amount = cost * duration * 100;
-  console.log('amount', amount);
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.ceil(amount),
       currency: 'eur',
       payment_method_types: ['card'],
+      metadata: {
+        userId,
+        duration: String(duration),
+      },
     });
 
     return NextResponse.json({

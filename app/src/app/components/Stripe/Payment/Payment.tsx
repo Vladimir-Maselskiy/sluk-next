@@ -29,7 +29,6 @@ export const Payment = () => {
   }, []);
 
   useEffect(() => {
-    console.log('data', data);
     if (!data) {
       router.replace('/failed');
       return;
@@ -37,7 +36,6 @@ export const Payment = () => {
 
     try {
       const { cost, userId, duration } = JSON.parse(atob(data));
-      console.log('cost', cost, 'userId', userId, 'duration', duration);
       if (!cost || !userId || !duration) {
         router.replace('/failed');
         return;
@@ -60,7 +58,7 @@ export const Payment = () => {
       setClientSecret(clientSecret);
       setAmount(amount);
     });
-  }, [isValid]);
+  }, [isValid, paymentData]);
 
   return (
     <div>

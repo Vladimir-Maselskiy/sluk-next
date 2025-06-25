@@ -6,7 +6,6 @@ import UserModel from '@/models/User';
 export async function POST(req: NextRequest) {
   try {
     const { accessToken } = await req.json();
-    console.log('accessToken', accessToken);
 
     if (!accessToken) {
       return NextResponse.json(
@@ -16,7 +15,6 @@ export async function POST(req: NextRequest) {
     }
 
     await connectToDatabase();
-    console.log('accessToken', accessToken);
 
     const response = await fetch(
       'https://www.googleapis.com/oauth2/v2/userinfo',

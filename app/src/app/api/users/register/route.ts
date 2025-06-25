@@ -22,7 +22,6 @@ export const POST = async (request: Request) => {
 
     // Check if user already exists
     const existingUser = await UserModel.findOne({ email });
-    console.log('existingUser', existingUser);
 
     if (existingUser) {
       return NextResponse.json({

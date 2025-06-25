@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/utils/db';
 import UserModel from '@/models/User';
-import { TRIAL_DAYS } from '@/app/assets/config';
+import { TRIAL_TIME } from '@/app/assets/config';
 
 export const POST = async (request: Request) => {
   try {
@@ -31,14 +31,15 @@ export const POST = async (request: Request) => {
       (Date.now() - new Date(updatedUser.trialStartedAt).getTime()) / 1000
     );
 
+    const isTrial = secondsPassed < TRIAL_TIME / 1000;
+
     return NextResponse.json({
       email: updatedUser.email,
-      isTrial: true,
+      isTrial,
       role: updatedUser.role,
       isActive: true,
-      secondsLeft: Math.max(0, TRIAL_DAYS / 1000 - secondsPassed),
       trialStartedAt: updatedUser.trialStartedAt,
-      trialDuration: TRIAL_DAYS,
+      trialDuration: TRIAL_TIME,
     });
   } catch (error) {
     console.error('Error fetching trial:', error);
