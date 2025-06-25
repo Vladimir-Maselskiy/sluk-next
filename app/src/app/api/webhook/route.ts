@@ -2,23 +2,23 @@ import UserModel from '@/models/User';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-function addMonthsSafe(date: Date, monthsToAdd: number): Date {
-  const newDate = new Date(date);
-  const originalDay = newDate.getDate();
+// function addMonthsSafe(date: Date, monthsToAdd: number): Date {
+//   const newDate = new Date(date);
+//   const originalDay = newDate.getDate();
 
-  newDate.setDate(1);
-  newDate.setMonth(newDate.getMonth() + monthsToAdd);
+//   newDate.setDate(1);
+//   newDate.setMonth(newDate.getMonth() + monthsToAdd);
 
-  const lastDayOfNewMonth = new Date(
-    newDate.getFullYear(),
-    newDate.getMonth() + 1,
-    0
-  ).getDate();
+//   const lastDayOfNewMonth = new Date(
+//     newDate.getFullYear(),
+//     newDate.getMonth() + 1,
+//     0
+//   ).getDate();
 
-  newDate.setDate(Math.min(originalDay, lastDayOfNewMonth));
+//   newDate.setDate(Math.min(originalDay, lastDayOfNewMonth));
 
-  return newDate;
-}
+//   return newDate;
+// }
 
 function addOneMinutesSafe(date: Date): Date {
   const newDate = new Date(date);
@@ -41,9 +41,14 @@ export async function POST(req: NextRequest) {
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
-  } catch (err: any) {
-    console.error('Webhook Error:', err.message);
-    return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error('Webhook Error:', err.message);
+      return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
+    } else {
+      console.error('Unknown Error:', err);
+      return new NextResponse('Unknown Webhook Error', { status: 400 });
+    }
   }
 
   // ===> Обробка оплати
