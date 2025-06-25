@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/utils/db';
 import UserModel from '@/models/User';
-import { TRIAL_DAYS } from '@/app/assets/config';
+import { TRIAL_TIME } from '@/app/assets/config';
 
 export const POST = async (request: Request) => {
   try {
@@ -21,9 +21,45 @@ export const POST = async (request: Request) => {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    if (user.hasSubscription) {
-      //  TODO check if subscription is active
-      return NextResponse.json({ active: true }, { status: 200 });
+    if (user.subscription.isSubscription) {
+      const {
+        subscriptionExpiresAt,
+        subscriptionStartedAt,
+        stripePaymentIntentId,
+      } = user.subscription;
+      if (
+        !subscriptionExpiresAt ||
+        !subscriptionStartedAt ||
+        !stripePaymentIntentId
+      ) {
+        return NextResponse.json(
+          { error: 'Subscription not found' },
+          { status: 404 }
+        );
+      }
+      const date = new Date(subscriptionExpiresAt).getTime();
+      const now = new Date().getTime();
+      if (date < now) {
+        return NextResponse.json({
+          email: user.email,
+          role: user.role,
+          isActive: false,
+          isSubscriptionStarted: true,
+          subscriptionExpiresAt,
+          trialStartedAt: user.trialStartedAt,
+          trialDuration: TRIAL_TIME,
+        });
+      } else {
+        return NextResponse.json({
+          email: user.email,
+          role: user.role,
+          isActive: true,
+          isSubscriptionStarted: true,
+          subscriptionExpiresAt,
+          trialStartedAt: user.trialStartedAt,
+          trialDuration: TRIAL_TIME,
+        });
+      }
     }
 
     if (!user.trialStartedAt) {
@@ -34,19 +70,16 @@ export const POST = async (request: Request) => {
       (Date.now() - new Date(user.trialStartedAt).getTime()) / 1000
     );
 
-    // const isActive = daysPassed < TRIAL_DAYS && minutesPassed < TRIAL_DAYS;
-    const isActive = secondsPassed * 1000 < TRIAL_DAYS;
-
-    console.log('response', { isActive, secondsPassed });
+    const isActive = secondsPassed * 1000 < TRIAL_TIME;
 
     return NextResponse.json({
       email: user.email,
-      isTrial: true,
       role: user.role,
       isActive,
-      secondsLeft: Math.max(0, TRIAL_DAYS / 1000 - secondsPassed),
+      isSubscriptionStarted: false,
+      subscriptionExpiresAt: null,
       trialStartedAt: user.trialStartedAt,
-      trialDuration: TRIAL_DAYS,
+      trialDuration: TRIAL_TIME,
     });
   } catch (error) {
     console.error('Error fetching trial:', error);

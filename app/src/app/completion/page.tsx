@@ -1,17 +1,10 @@
-import React from 'react';
+import { Suspense } from 'react';
+import CompletionPageClient from './CompletionPageClient';
 
-export default function Completion() {
+export default function CompletionPage() {
   return (
-    <div
-      style={{
-        padding: '20px',
-        width: '100%',
-        textAlign: 'center',
-        fontSize: '24px',
-        color: 'var(--accent-color)',
-      }}
-    >
-      <div>Thank you! Your payment was successful!🎉</div>
-    </div>
+    <Suspense fallback={<div>Loading payment result...</div>}>
+      <CompletionPageClient />
+    </Suspense>
   );
 }
