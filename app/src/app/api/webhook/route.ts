@@ -57,7 +57,8 @@ export async function POST(req: NextRequest) {
 
     const metadata =
       paymentIntent.metadata || ({} as { userId: string; duration: string });
-    const { userId, duration } = metadata;
+    // const { userId, duration } = metadata;
+    const { userId } = metadata;
 
     if (!userId) {
       console.warn('Missing userId in paymentIntent.metadata');
