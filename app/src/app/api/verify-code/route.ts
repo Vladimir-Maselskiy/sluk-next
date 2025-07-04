@@ -21,5 +21,5 @@ export const POST = async (req: Request) => {
 
   await VerificationModel.deleteOne({ email });
 
-  return NextResponse.json({ success: true, userId: newUser._id });
+  return NextResponse.json({ success: true, userId: newUser._id, email });
 };
