@@ -7,6 +7,8 @@ export async function POST(req: NextRequest) {
   try {
     const { accessToken } = await req.json();
 
+    console.log('accessToken', accessToken);
+
     if (!accessToken) {
       return NextResponse.json(
         { success: false, error: 'Access token is required' },
