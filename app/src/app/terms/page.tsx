@@ -24,7 +24,7 @@ export default function TermsPage() {
         <li>
           Your personal data is not shared with third parties, and it is handled
           according to our{' '}
-          <a href="/privacy" className="text-blue-600 underline">
+          <a href="/privacy-policy" className="text-blue-600 underline">
             Privacy Policy
           </a>
           .
