@@ -4,9 +4,9 @@ import { connectToDatabase } from '@/utils/db';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ userId: string }> }
+  { params }: { params: { userId: string } }
 ) {
-  const { userId } = await params;
+  const { userId } = params;
   try {
     await connectToDatabase();
 

@@ -22,7 +22,7 @@ import Stripe from 'stripe';
 
 function addOneMinutesSafe(date: Date): Date {
   const newDate = new Date(date);
-  newDate.setSeconds(newDate.getSeconds() + 60 * 2);
+  newDate.setSeconds(newDate.getSeconds() + 60 * 60);
   return newDate;
 }
 

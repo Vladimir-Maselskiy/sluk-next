@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import stripe from '../../../../lib/stripe';
 import UserModel from '@/models/User';
+import { connectToDatabase } from '@/utils/db';
 
 export const POST = async (request: NextRequest) => {
   const { cost, userId, duration } = await request.json();
@@ -10,7 +11,11 @@ export const POST = async (request: NextRequest) => {
       { status: 400 }
     );
   }
-  const user = UserModel.findById(userId);
+
+  // DB connection
+  await connectToDatabase();
+
+  const user = await UserModel.findById(userId);
   if (!user) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
