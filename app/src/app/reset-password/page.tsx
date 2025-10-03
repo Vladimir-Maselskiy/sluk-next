@@ -1,11 +1,12 @@
 import ResetPasswordPageClient from './ResetPasswordPageClient';
 
 type PageProps = {
-  searchParams?: Record<string, string | string[] | undefined>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-export default function ResetPasswordPage({ searchParams }: PageProps) {
-  const emailParam = searchParams?.email;
+export default async function ResetPasswordPage({ searchParams }: PageProps) {
+  const resolvedParams = searchParams ? await searchParams : {};
+  const emailParam = resolvedParams.email;
   const initialEmail = Array.isArray(emailParam)
     ? emailParam[0] ?? ''
     : emailParam ?? '';
