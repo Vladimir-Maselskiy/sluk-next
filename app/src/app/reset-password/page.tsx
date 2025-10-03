@@ -1,10 +1,10 @@
-import { Suspense } from 'react';
-import ResetPasswordPageClient from './ResetPasswordPageClient';
+import dynamic from 'next/dynamic';
+
+const ResetPasswordPageClient = dynamic(
+  () => import('./ResetPasswordPageClient'),
+  { ssr: false, loading: () => <div>Loading reset form...</div> }
+);
 
 export default function ResetPasswordPage() {
-  return (
-    <Suspense fallback={<div>Loading reset form...</div>}>
-      <ResetPasswordPageClient />
-    </Suspense>
-  );
+  return <ResetPasswordPageClient />;
 }
