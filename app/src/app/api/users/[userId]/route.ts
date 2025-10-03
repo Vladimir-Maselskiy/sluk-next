@@ -4,7 +4,7 @@ import { connectToDatabase } from '@/utils/db';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Record<string, string> }
 ) {
   const { userId } = params;
   try {
