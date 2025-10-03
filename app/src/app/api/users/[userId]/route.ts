@@ -2,14 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import User from '@/models/User';
 import { connectToDatabase } from '@/utils/db';
 
-type RouteContext = {
-  params: {
-    userId: string;
-  };
-};
-
-export async function GET(_req: NextRequest, { params }: RouteContext) {
-  const { userId } = params;
+export async function GET(
+  _req: NextRequest,
+  context: { params: { userId: string } }
+) {
+  const { userId } = context.params;
   try {
     await connectToDatabase();
 
