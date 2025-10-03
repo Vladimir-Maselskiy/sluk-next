@@ -3,10 +3,10 @@ import User from '@/models/User';
 import { connectToDatabase } from '@/utils/db';
 
 export async function GET(
-  _req: NextRequest,
-  context: { params: { userId: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ userId: string }> }
 ) {
-  const { userId } = context.params;
+  const { userId } = await params;
   try {
     await connectToDatabase();
 
