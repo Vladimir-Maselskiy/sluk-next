@@ -4,7 +4,6 @@ import { connectToDatabase } from '@/utils/db';
 import UserModel from '@/models/User';
 import PasswordResetToken from '@/models/PasswordResetToken';
 import { transporter, user as senderEmail } from '@/utils/nodemailer';
-import { redirect } from 'next/dist/server/api-utils';
 
 export const POST = async (request: Request) => {
   try {
