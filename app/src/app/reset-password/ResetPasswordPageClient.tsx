@@ -1,23 +1,24 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
 import { FormEvent, useEffect, useState } from 'react';
 
-export default function ResetPasswordPageClient() {
-  const [email, setEmail] = useState('');
+type ResetPasswordPageClientProps = {
+  initialEmail?: string;
+};
+
+export default function ResetPasswordPageClient({
+  initialEmail = '',
+}: ResetPasswordPageClientProps) {
+  const [email, setEmail] = useState(initialEmail);
   const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const emailFromUrl = searchParams.get('email');
-    if (emailFromUrl) {
-      setEmail(emailFromUrl);
-    }
-  }, [searchParams]);
+    setEmail(initialEmail);
+  }, [initialEmail]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,7 +41,6 @@ export default function ResetPasswordPageClient() {
         setError(data.error || 'Unable to reset the password.');
       } else {
         setMessage('Your password has been updated successfully.');
-        setEmail('');
         setCode('');
         setPassword('');
       }

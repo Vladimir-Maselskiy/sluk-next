@@ -1,10 +1,14 @@
-import dynamic from 'next/dynamic';
+import ResetPasswordPageClient from './ResetPasswordPageClient';
 
-const ResetPasswordPageClient = dynamic(
-  () => import('./ResetPasswordPageClient'),
-  { ssr: false, loading: () => <div>Loading reset form...</div> }
-);
+type PageProps = {
+  searchParams?: Record<string, string | string[] | undefined>;
+};
 
-export default function ResetPasswordPage() {
-  return <ResetPasswordPageClient />;
+export default function ResetPasswordPage({ searchParams }: PageProps) {
+  const emailParam = searchParams?.email;
+  const initialEmail = Array.isArray(emailParam)
+    ? emailParam[0] ?? ''
+    : emailParam ?? '';
+
+  return <ResetPasswordPageClient initialEmail={initialEmail} />;
 }

@@ -1,26 +1,25 @@
 'use client';
 
 import { FormEvent, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 
-const initialFormState = {
-  email: '',
-  message: '',
+type FeedbackPageClientProps = {
+  initialEmail?: string;
 };
 
-export default function FeedbackPageClient() {
-  const searchParams = useSearchParams();
-  const [formState, setFormState] = useState(initialFormState);
+export default function FeedbackPageClient({
+  initialEmail = '',
+}: FeedbackPageClientProps) {
+  const [formState, setFormState] = useState(() => ({
+    email: initialEmail,
+    message: '',
+  }));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    const emailFromQuery = searchParams.get('email');
-    if (emailFromQuery) {
-      setFormState(prev => ({ ...prev, email: emailFromQuery }));
-    }
-  }, [searchParams]);
+    setFormState(prev => ({ ...prev, email: initialEmail }));
+  }, [initialEmail]);
 
   const handleChange = (field: 'email' | 'message') =>
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
