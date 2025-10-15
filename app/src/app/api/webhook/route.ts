@@ -1,30 +1,31 @@
 import UserModel from '@/models/User';
+import { connectToDatabase } from '@/utils/db';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-// function addMonthsSafe(date: Date, monthsToAdd: number): Date {
-//   const newDate = new Date(date);
-//   const originalDay = newDate.getDate();
-
-//   newDate.setDate(1);
-//   newDate.setMonth(newDate.getMonth() + monthsToAdd);
-
-//   const lastDayOfNewMonth = new Date(
-//     newDate.getFullYear(),
-//     newDate.getMonth() + 1,
-//     0
-//   ).getDate();
-
-//   newDate.setDate(Math.min(originalDay, lastDayOfNewMonth));
-
-//   return newDate;
-// }
-
-function addOneMinutesSafe(date: Date): Date {
+function addMonthsSafe(date: Date, monthsToAdd: number): Date {
   const newDate = new Date(date);
-  newDate.setSeconds(newDate.getSeconds() + 60 * 60);
+  const originalDay = newDate.getDate();
+
+  newDate.setDate(1);
+  newDate.setMonth(newDate.getMonth() + monthsToAdd);
+
+  const lastDayOfNewMonth = new Date(
+    newDate.getFullYear(),
+    newDate.getMonth() + 1,
+    0
+  ).getDate();
+
+  newDate.setDate(Math.min(originalDay, lastDayOfNewMonth));
+
   return newDate;
 }
+
+// function addOneMinutesSafe(date: Date): Date {
+//   const newDate = new Date(date);
+//   newDate.setSeconds(newDate.getSeconds() + 60 * 60);
+//   return newDate;
+// }
 
 export async function POST(req: NextRequest) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -52,13 +53,13 @@ export async function POST(req: NextRequest) {
   }
 
   // ===> Обробка оплати
+  await connectToDatabase();
   if (event.type === 'payment_intent.succeeded') {
     const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
     const metadata =
       paymentIntent.metadata || ({} as { userId: string; duration: string });
-    // const { userId, duration } = metadata;
-    const { userId } = metadata;
+    const { userId, duration } = metadata;
 
     if (!userId) {
       console.warn('Missing userId in paymentIntent.metadata');
@@ -66,11 +67,9 @@ export async function POST(req: NextRequest) {
     }
 
     const now = new Date();
-    // TODO add in production
-    // const subscriptionExpiresAt = addMonthsSafe(now, Number(duration));
 
-    // TODO remove in prodution
-    const subscriptionExpiresAt = addOneMinutesSafe(now);
+    const months = Number(duration) || 1;
+    const subscriptionExpiresAt = addMonthsSafe(now, months);
 
     await UserModel.findByIdAndUpdate(userId, {
       subscription: {
