@@ -36,11 +36,13 @@ export async function GET(req: NextRequest) {
         { status: 400 }
       );
 
-    const response = await fetch(`${domain}/api/users/google`, {
+    const response = await fetch(new URL('/api/users/google', req.url), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ accessToken: tokenData.access_token }),
     }).then(res => res.json());
+
+    console.log('response_user', response);
 
     if (!response.success)
       return NextResponse.json(
