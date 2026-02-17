@@ -13,7 +13,7 @@
     "@stripe/stripe-js": "^7.3.0",
     "antd": "^5.26.1",
     "mongoose": "^8.15.1",
-    "next": "15.3.2",
+    "next": "15.3.8",
     "nodemailer": "^7.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
