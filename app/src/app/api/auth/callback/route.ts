@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
         { status: 400 }
       );
 
-    const response = await fetch(`${domain}/api/users/google`, {
+    const response = await fetch(new URL('/api/users/google', req.url), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ accessToken: tokenData.access_token }),
@@ -49,7 +49,6 @@ export async function GET(req: NextRequest) {
       );
 
     const { user } = response;
-    console.log('user', user);
 
     // Повертаємо HTML з postMessage для popup
     const popupRedirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/google-auth-result?status=success&email=${user.email}&id=${user._id}&#access_token=${tokenData.access_token}`;
