@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   try {
-    console.log('callback_1');
     const url = new URL(req.url);
     const code = url.searchParams.get('code');
     if (!code)
@@ -16,7 +15,6 @@ export async function GET(req: NextRequest) {
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
     const domain = process.env.NEXT_PUBLIC_BASE_URL;
     const redirectUri = `${domain}/api/auth/callback`;
-    console.log('callback_2');
 
     // Обмінюємо code на access_token
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
@@ -30,7 +28,6 @@ export async function GET(req: NextRequest) {
         grant_type: 'authorization_code',
       }),
     });
-    console.log('callback_3');
 
     const tokenData = await tokenRes.json();
     if (!tokenData.access_token)
@@ -44,9 +41,6 @@ export async function GET(req: NextRequest) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ accessToken: tokenData.access_token }),
     }).then(res => res.json());
-    console.log('callback_4');
-
-    console.log('response_user', response);
 
     if (!response.success)
       return NextResponse.json(
@@ -55,7 +49,6 @@ export async function GET(req: NextRequest) {
       );
 
     const { user } = response;
-    console.log('user', user);
 
     // Повертаємо HTML з postMessage для popup
     const popupRedirectUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/google-auth-result?status=success&email=${user.email}&id=${user._id}&#access_token=${tokenData.access_token}`;
