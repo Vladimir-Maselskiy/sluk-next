@@ -3,6 +3,8 @@ import { connectToDatabase } from '@/utils/db';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
+const ALLOWED_SUBSCRIPTION_DURATIONS = new Set([3, 12]);
+
 function addMonthsSafe(date: Date, monthsToAdd: number): Date {
   const newDate = new Date(date);
   const originalDay = newDate.getDate();
@@ -68,7 +70,15 @@ export async function POST(req: NextRequest) {
 
     const now = new Date();
 
-    const months = Number(duration) || 1;
+    const months = Number(duration);
+    if (!ALLOWED_SUBSCRIPTION_DURATIONS.has(months)) {
+      console.warn('Unsupported subscription duration:', duration);
+      return NextResponse.json({
+        received: true,
+        error: 'Unsupported subscription duration',
+      });
+    }
+
     const subscriptionExpiresAt = addMonthsSafe(now, months);
 
     await UserModel.findByIdAndUpdate(userId, {
