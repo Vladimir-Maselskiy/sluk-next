@@ -3,11 +3,25 @@ import stripe from '../../../../lib/stripe';
 import UserModel from '@/models/User';
 import { connectToDatabase } from '@/utils/db';
 
+const SUBSCRIPTION_PLANS: Record<number, { amount: number; duration: number }> =
+  {
+    3: { amount: 300, duration: 3 },
+    12: { amount: 900, duration: 12 },
+  };
+
 export const POST = async (request: NextRequest) => {
-  const { cost, userId, duration } = await request.json();
-  if (!cost || !userId || !duration) {
+  const { userId, duration } = await request.json();
+  if (!userId || !duration) {
     return NextResponse.json(
       { error: 'Missing required fields' },
+      { status: 400 }
+    );
+  }
+
+  const plan = SUBSCRIPTION_PLANS[Number(duration)];
+  if (!plan) {
+    return NextResponse.json(
+      { error: 'Unsupported subscription duration' },
       { status: 400 }
     );
   }
@@ -19,22 +33,21 @@ export const POST = async (request: NextRequest) => {
   if (!user) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 });
   }
-  const amount = cost * duration * 100;
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.ceil(amount),
+      amount: plan.amount,
       currency: 'eur',
       payment_method_types: ['card'],
       metadata: {
         userId,
-        duration: String(duration),
+        duration: String(plan.duration),
       },
     });
 
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
-      amount,
+      amount: plan.amount,
     });
   } catch (error) {
     return NextResponse.json(
